@@ -3,20 +3,20 @@ const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false, // Remove X-Powered-By header for security
   
-  // Optimize images for better Lighthouse score
+  // Optimize images for better Lighthouse scores
   images: {
     formats: ['image/avif', 'image/webp'],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
     minimumCacheTTL: 60,
   },
   
-  // Enable modern JS features
+  // Enable modern optimizations
   experimental: {
-    optimizeCss: true, // Optimize CSS for better performance
-    scrollRestoration: true, // Improve scroll handling
+    optimizeCss: true, // Minimize CSS
+    optimizePackageImports: ['@heroicons/react'], // If using heroicons for feature icons
   },
 
-  // Content Security Policy for better security
+  // Content Security Policy for enhanced security
   headers: async () => [
     {
       source: '/:path*',
@@ -45,15 +45,16 @@ const nextConfig = {
     }
   ],
 
-  // Optimize build output
-  compiler: {
-    removeConsole: process.env.NODE_ENV === 'production',
-    // Enable emotion for better CSS-in-JS performance if needed later
-    emotion: false,
-  },
+  // Webpack configuration for optimizations
+  webpack: (config, { dev, isServer }) => {
+    // Optimize SVG loading for feature icons
+    config.module.rules.push({
+      test: /\.svg$/,
+      use: ['@svgr/webpack']
+    });
 
-  // Enable SWC minification for better performance
-  swcMinify: true,
-}
+    return config;
+  }
+};
 
 export default nextConfig;

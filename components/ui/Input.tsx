@@ -52,14 +52,13 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             id={inputId}
             aria-label={ariaLabel || label}
             aria-invalid={!!error}
-            aria-errormessage={error ? errorId : undefined}
-            aria-describedby={helperText ? helperId : undefined}
+            aria-describedby={`${error ? errorId : ''} ${helperText ? helperId : ''}`}
             className={twMerge(
               'block px-4 py-2 w-full text-gray-900 bg-white border rounded-lg',
               'dark:bg-gray-800 dark:text-white dark:border-gray-600',
-              'focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-400',
+              'focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-500 dark:focus:border-blue-500',
               'disabled:opacity-50 disabled:cursor-not-allowed',
-              error && 'border-red-500 dark:border-red-400',
+              error && 'border-red-500 dark:border-red-500',
               startIcon && 'pl-10',
               endIcon && 'pr-10',
               className
@@ -75,7 +74,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         {error && (
           <p
             id={errorId}
-            className="mt-1 text-sm text-red-600 dark:text-red-400"
+            className="mt-1 text-sm text-red-600 dark:text-red-500"
             role="alert"
           >
             {error}

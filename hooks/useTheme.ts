@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 type Theme = 'light' | 'dark';
 
@@ -9,30 +9,23 @@ export function useTheme() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    // Set mounted to true once the component is mounted
+    // Set mounted state to handle hydration mismatch
     setMounted(true);
     
-    // Check for system preference and localStorage
-    const savedTheme = localStorage.getItem('theme') as Theme;
+    // Check for system preference
     const systemPreference = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     
-    // Set initial theme
-    setTheme(savedTheme || systemPreference);
-
-    // Apply theme to document
-    document.documentElement.classList.toggle('dark', savedTheme === 'dark' || (!savedTheme && systemPreference === 'dark'));
+    // Get stored theme or use system preference
+    const storedTheme = localStorage.getItem('theme') as Theme | null;
+    const initialTheme = storedTheme || systemPreference;
+    
+    setTheme(initialTheme);
+    document.documentElement.classList.toggle('dark', initialTheme === 'dark');
   }, []);
 
-  // Handle theme toggle
+  // Handle theme changes
   const toggleTheme = () => {
     const newTheme = theme === 'light' ? 'dark' : 'light';
-    setTheme(newTheme);
-    localStorage.setItem('theme', newTheme);
-    document.documentElement.classList.toggle('dark');
-  };
-
-  // Handle theme set
-  const setThemeValue = (newTheme: Theme) => {
     setTheme(newTheme);
     localStorage.setItem('theme', newTheme);
     document.documentElement.classList.toggle('dark', newTheme === 'dark');
@@ -40,8 +33,8 @@ export function useTheme() {
 
   return {
     theme,
-    setTheme: setThemeValue,
     toggleTheme,
-    mounted // Used to prevent hydration mismatch
-  };
+    mounted, // Used to prevent hydration mismatch
+    isDark: theme === 'dark'
+  } as const;
 }

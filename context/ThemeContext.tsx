@@ -22,13 +22,13 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     
     if (storedTheme) {
       setTheme(storedTheme);
-    } else {
-      setTheme(systemPrefersDark ? 'dark' : 'light');
+    } else if (systemPrefersDark) {
+      setTheme('dark');
     }
   }, []);
 
   useEffect(() => {
-    // Update HTML class and localStorage when theme changes
+    // Update DOM and localStorage when theme changes
     const root = window.document.documentElement;
     root.classList.remove('light', 'dark');
     root.classList.add(theme);
@@ -59,6 +59,3 @@ export function useThemeContext() {
   }
   return context;
 }
-
-// Export the raw context as well for advanced use cases
-export { ThemeContext };

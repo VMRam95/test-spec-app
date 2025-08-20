@@ -44,22 +44,39 @@ const config: Config = {
         '128': '32rem',
       },
       fontFamily: {
-        sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
+        sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
+        heading: ['var(--font-heading)', 'system-ui', 'sans-serif'],
       },
       fontSize: {
-        '2.5xl': ['1.75rem', '2.25rem'],
+        'hero': ['4rem', { lineHeight: '1.1', letterSpacing: '-0.02em' }],
       },
       animation: {
         'fade-in': 'fade-in 0.5s ease-in-out',
+        'slide-up': 'slide-up 0.5s ease-out',
       },
       keyframes: {
         'fade-in': {
           '0%': { opacity: '0' },
           '100%': { opacity: '1' },
         },
+        'slide-up': {
+          '0%': { transform: 'translateY(10px)', opacity: '0' },
+          '100%': { transform: 'translateY(0)', opacity: '1' },
+        },
       },
-      maxWidth: {
-        '8xl': '88rem',
+      gridTemplateColumns: {
+        'features': 'repeat(auto-fit, minmax(280px, 1fr))',
+      },
+    },
+    // Ensure consistent container behavior
+    container: {
+      center: true,
+      padding: {
+        DEFAULT: '1rem',
+        sm: '2rem',
+        lg: '4rem',
+        xl: '5rem',
+        '2xl': '6rem',
       },
     },
   },
@@ -67,6 +84,14 @@ const config: Config = {
     forms({
       strategy: 'class', // Use class strategy for form elements
     }),
+  ],
+  // Safelist classes that might be dynamically generated
+  safelist: [
+    'dark',
+    'light',
+    {
+      pattern: /(bg|text|border)-(primary|secondary)-(50|100|200|300|400|500|600|700|800|900|950)/,
+    },
   ],
 }
 

@@ -1,15 +1,16 @@
-# https://www.robotstxt.org/robotstxt.html
+# Allow all crawlers
 User-agent: *
 Allow: /
 
 # Sitemap location
-Sitemap: https://simple-landing-page.com/sitemap.xml
+Sitemap: https://yourdomain.com/sitemap.xml
 
-# Disallow access to API routes
+# Prevent crawling of error pages or api routes
 Disallow: /api/
+Disallow: /404
+Disallow: /500
 
-# Allow access to static assets
-Allow: /static/
+# Allow crawling of static assets
 Allow: /images/
+Allow: /fonts/
 Allow: /_next/static/
-Allow: /_next/image/

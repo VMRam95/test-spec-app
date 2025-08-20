@@ -1,132 +1,139 @@
+/**
+ * Validation utilities for the simple-landing-page application
+ * Provides type-safe validation functions for forms and input fields
+ */
+
 // Types for validation results
 export interface ValidationResult {
   isValid: boolean;
-  message?: string;
+  message: string;
 }
 
-// Email validation regex pattern
-// This pattern follows RFC 5322 standards
-const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+export interface FormValidationResult {
+  isValid: boolean;
+  errors: Record<string, string>;
+}
 
 /**
  * Validates an email address
  * @param email - The email address to validate
- * @returns ValidationResult object
+ * @returns ValidationResult with validation status and message
  */
 export const validateEmail = (email: string): ValidationResult => {
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  
   if (!email) {
     return {
       isValid: false,
-      message: 'Email is required',
+      message: 'Email is required'
     };
   }
 
-  if (email.length > 254) {
+  if (!emailRegex.test(email)) {
     return {
       isValid: false,
-      message: 'Email is too long',
-    };
-  }
-
-  if (!EMAIL_REGEX.test(email)) {
-    return {
-      isValid: false,
-      message: 'Please enter a valid email address',
+      message: 'Please enter a valid email address'
     };
   }
 
   return {
     isValid: true,
+    message: ''
   };
 };
 
 /**
  * Validates required fields
  * @param value - The value to check
- * @param fieldName - Name of the field for the error message
- * @returns ValidationResult object
+ * @param fieldName - Name of the field being validated
+ * @returns ValidationResult with validation status and message
  */
-export const validateRequired = (value: unknown, fieldName: string): ValidationResult => {
-  if (value === undefined || value === null || value === '') {
+export const validateRequired = (value: string, fieldName: string): ValidationResult => {
+  if (!value || value.trim().length === 0) {
     return {
       isValid: false,
-      message: `${fieldName} is required`,
+      message: `${fieldName} is required`
     };
   }
 
   return {
     isValid: true,
+    message: ''
   };
 };
 
 /**
- * Validates string length
+ * Validates minimum length of a string
  * @param value - The string to validate
- * @param options - Min and max length options
- * @returns ValidationResult object
+ * @param minLength - Minimum required length
+ * @param fieldName - Name of the field being validated
+ * @returns ValidationResult with validation status and message
  */
-export const validateLength = (
+export const validateMinLength = (
   value: string,
-  options: { min?: number; max?: number }
+  minLength: number,
+  fieldName: string
 ): ValidationResult => {
-  const { min, max } = options;
-
-  if (min && value.length < min) {
+  if (value.length < minLength) {
     return {
       isValid: false,
-      message: `Must be at least ${min} characters`,
-    };
-  }
-
-  if (max && value.length > max) {
-    return {
-      isValid: false,
-      message: `Must not exceed ${max} characters`,
+      message: `${fieldName} must be at least ${minLength} characters long`
     };
   }
 
   return {
     isValid: true,
+    message: ''
   };
 };
 
 /**
- * Validates a phone number format
- * Accepts various formats including international
- * @param phone - The phone number to validate
- * @returns ValidationResult object
+ * Validates a contact form submission
+ * @param data - Form data object containing email and other fields
+ * @returns FormValidationResult with overall validation status and field-specific errors
  */
-export const validatePhone = (phone: string): ValidationResult => {
-  // Remove all non-numeric characters for validation
-  const cleanPhone = phone.replace(/\D/g, '');
+export const validateContactForm = (data: {
+  email: string;
+  name: string;
+  message: string;
+}): FormValidationResult => {
+  const errors: Record<string, string> = {};
+  
+  // Validate email
+  const emailValidation = validateEmail(data.email);
+  if (!emailValidation.isValid) {
+    errors.email = emailValidation.message;
+  }
 
-  if (cleanPhone.length < 10 || cleanPhone.length > 15) {
-    return {
-      isValid: false,
-      message: 'Please enter a valid phone number',
-    };
+  // Validate name
+  const nameValidation = validateRequired(data.name, 'Name');
+  if (!nameValidation.isValid) {
+    errors.name = nameValidation.message;
+  }
+
+  // Validate message
+  const messageValidation = validateMinLength(data.message, 10, 'Message');
+  if (!messageValidation.isValid) {
+    errors.message = messageValidation.message;
   }
 
   return {
-    isValid: true,
+    isValid: Object.keys(errors).length === 0,
+    errors
   };
 };
 
 /**
- * Validates a URL format
- * @param url - The URL to validate
- * @returns ValidationResult object
+ * Sanitizes user input to prevent XSS attacks
+ * @param input - The string to sanitize
+ * @returns Sanitized string
  */
-export const validateUrl = (url: string): ValidationResult => {
-  try {
-    new URL(url);
-    return {
-      isValid: true,
-    };
-  } catch {
-    return {
-      isValid: false,
-      message: 'Please enter a valid URL',
-    };
-  }
+export const sanitizeInput = (input: string): string => {
+  return input
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;')
+    .replace(/\//g, '&#x2F;');
 };
