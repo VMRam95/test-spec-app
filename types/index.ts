@@ -7,14 +7,29 @@ export interface HeroContent {
   subtitle: string;
   ctaText: string;
   ctaLink: string;
+  imageUrl?: string;
+  imageAlt?: string;
 }
 
-// Feature types
+// Features grid types
 export interface Feature {
   id: string;
   title: string;
   description: string;
-  icon: string; // Icon component name or path
+  icon: string;
+  iconAlt: string;
+}
+
+export interface FeaturesGridProps {
+  features: Feature[];
+  title?: string;
+  subtitle?: string;
+}
+
+// Feature card types
+export interface FeatureCardProps {
+  feature: Feature;
+  className?: string;
 }
 
 // Contact form types
@@ -24,16 +39,15 @@ export interface ContactFormData {
   message: string;
 }
 
-export interface ContactFormErrors {
-  name?: string;
-  email?: string;
-  message?: string;
+export interface ContactFormProps {
+  onSubmit: (data: ContactFormData) => Promise<void>;
+  className?: string;
 }
 
-// Form validation response type
-export interface ValidationResponse {
+// Form validation types
+export interface ValidationResult {
   isValid: boolean;
-  errors?: ContactFormErrors;
+  message?: string;
 }
 
 // SEO and metadata types
@@ -45,47 +59,23 @@ export interface MetaData {
   canonicalUrl?: string;
 }
 
-// Theme context types
-export interface ThemeContextType {
+// Theme toggle types
+export interface ThemeToggleProps {
   theme: Theme;
-  toggleTheme: () => void;
+  onThemeChange: (theme: Theme) => void;
+  className?: string;
 }
 
-// Feature grid layout options
-export interface GridConfig {
-  columns: {
-    mobile: number;
-    tablet: number;
-    desktop: number;
-  };
-  gap: string;
-}
-
-// Component common props
+// Common component props
 export interface BaseProps {
   className?: string;
   id?: string;
   'aria-label'?: string;
 }
 
-// Responsive image props
-export interface ResponsiveImageProps extends BaseProps {
-  src: string;
-  alt: string;
-  width: number;
-  height: number;
-  priority?: boolean;
-}
-
 // API response types
-export interface ApiResponse<T> {
+export interface ApiResponse<T = unknown> {
   success: boolean;
   data?: T;
   error?: string;
-}
-
-// Form submission response
-export interface FormSubmissionResponse {
-  success: boolean;
-  message: string;
 }

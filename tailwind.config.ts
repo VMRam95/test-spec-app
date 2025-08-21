@@ -7,7 +7,7 @@ const config: Config = {
     './components/**/*.{js,ts,jsx,tsx}',
     './app/**/*.{js,ts,jsx,tsx}',
   ],
-  darkMode: 'class', // Enable dark mode with class strategy
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
@@ -44,55 +44,26 @@ const config: Config = {
         '128': '32rem',
       },
       fontFamily: {
-        sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
-        heading: ['var(--font-heading)', 'system-ui', 'sans-serif'],
+        sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
       },
       fontSize: {
-        'hero': ['4rem', { lineHeight: '1.1', letterSpacing: '-0.02em' }],
+        '2.5xl': ['1.75rem', '2.25rem'],
       },
       animation: {
         'fade-in': 'fade-in 0.5s ease-in-out',
-        'slide-up': 'slide-up 0.5s ease-out',
       },
       keyframes: {
         'fade-in': {
           '0%': { opacity: '0' },
           '100%': { opacity: '1' },
         },
-        'slide-up': {
-          '0%': { transform: 'translateY(10px)', opacity: '0' },
-          '100%': { transform: 'translateY(0)', opacity: '1' },
-        },
       },
-      gridTemplateColumns: {
-        'features': 'repeat(auto-fit, minmax(280px, 1fr))',
-      },
-    },
-    // Ensure consistent container behavior
-    container: {
-      center: true,
-      padding: {
-        DEFAULT: '1rem',
-        sm: '2rem',
-        lg: '4rem',
-        xl: '5rem',
-        '2xl': '6rem',
+      maxWidth: {
+        '8xl': '88rem',
       },
     },
   },
-  plugins: [
-    forms({
-      strategy: 'class', // Use class strategy for form elements
-    }),
-  ],
-  // Safelist classes that might be dynamically generated
-  safelist: [
-    'dark',
-    'light',
-    {
-      pattern: /(bg|text|border)-(primary|secondary)-(50|100|200|300|400|500|600|700|800|900|950)/,
-    },
-  ],
+  plugins: [forms],
 }
 
 export default config

@@ -1,16 +1,11 @@
-# Allow all crawlers
+# https://www.robotstxt.org/robotstxt.html
 User-agent: *
 Allow: /
 
 # Sitemap location
 Sitemap: https://yourdomain.com/sitemap.xml
 
-# Prevent crawling of error pages or api routes
+# Disallow common patterns that shouldn't be indexed
 Disallow: /api/
-Disallow: /404
-Disallow: /500
-
-# Allow crawling of static assets
-Allow: /images/
-Allow: /fonts/
-Allow: /_next/static/
+Disallow: /_next/
+Disallow: /static/

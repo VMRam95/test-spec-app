@@ -1,9 +1,10 @@
 {
   "version": 2,
   "buildCommand": "next build",
-  "installCommand": "npm install",
-  "framework": "nextjs",
-  "regions": ["iad1"],
+  "outputDirectory": ".next",
+  "github": {
+    "silent": true
+  },
   "headers": [
     {
       "source": "/(.*)",
@@ -23,7 +24,7 @@
       ]
     },
     {
-      "source": "/static/(.*)",
+      "source": "/(.*).(jpe?g|png|webp|avif|gif|svg)",
       "headers": [
         {
           "key": "Cache-Control",

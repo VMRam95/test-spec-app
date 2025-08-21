@@ -45,16 +45,17 @@ export default function RootLayout({
         {/* WCAG 2.1 AA Compliance - Skip to main content link */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
       </head>
-      <body className={`${inter.className} min-h-screen`}>
+      <body className={`${inter.className} min-h-screen antialiased`}>
         {/* Skip to main content for accessibility */}
         <a
           href="#main-content"
-          className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:px-4 focus:py-2 focus:bg-white focus:text-black"
+          className="absolute left-[-999px] top-0 z-50 bg-white px-4 py-3 text-sm text-black focus:left-0"
         >
           Skip to main content
         </a>
+        
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <main id="main-content" className="min-h-screen">
+          <main id="main-content" className="relative">
             {children}
           </main>
         </ThemeProvider>

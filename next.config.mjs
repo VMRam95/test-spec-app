@@ -1,60 +1,58 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Enable React strict mode for better development experience
   reactStrictMode: true,
-  poweredByHeader: false, // Remove X-Powered-By header for security
-  
-  // Optimize images for better Lighthouse scores
+
+  // Optimize images by default
   images: {
     formats: ['image/avif', 'image/webp'],
+    remotePatterns: [],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
-    minimumCacheTTL: 60,
-  },
-  
-  // Enable modern optimizations
-  experimental: {
-    optimizeCss: true, // Minimize CSS
-    optimizePackageImports: ['@heroicons/react'], // If using heroicons for feature icons
+    imageSizes: [16, 32, 48, 64, 96, 128, 256],
   },
 
-  // Content Security Policy for enhanced security
+  // Enable page speed improvements
+  poweredByHeader: false,
+  compress: true,
+
+  // Modern JavaScript features
+  experimental: {
+    // Enable modern webpack optimizations
+    optimizeCss: true,
+    // Support for server actions (useful for contact form)
+    serverActions: true,
+  },
+
+  // Content Security Policy
   headers: async () => [
     {
       source: '/:path*',
       headers: [
         {
-          key: 'X-DNS-Prefetch-Control',
-          value: 'on'
-        },
-        {
-          key: 'X-XSS-Protection',
-          value: '1; mode=block'
+          key: 'X-Content-Type-Options',
+          value: 'nosniff',
         },
         {
           key: 'X-Frame-Options',
-          value: 'SAMEORIGIN'
+          value: 'DENY',
         },
         {
-          key: 'X-Content-Type-Options',
-          value: 'nosniff'
+          key: 'X-XSS-Protection',
+          value: '1; mode=block',
         },
-        {
-          key: 'Referrer-Policy',
-          value: 'strict-origin-when-cross-origin'
-        }
-      ]
-    }
+      ],
+    },
   ],
 
   // Webpack configuration for optimizations
   webpack: (config, { dev, isServer }) => {
-    // Optimize SVG loading for feature icons
-    config.module.rules.push({
-      test: /\.svg$/,
-      use: ['@svgr/webpack']
-    });
+    // Optimize packages with ESM
+    config.resolve.extensionAlias = {
+      '.js': ['.js', '.ts', '.tsx'],
+    }
 
-    return config;
-  }
-};
+    return config
+  },
+}
 
-export default nextConfig;
+export default nextConfig

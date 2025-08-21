@@ -1,18 +1,21 @@
 /**
  * Validation utilities for the simple-landing-page application
- * Provides type-safe validation functions for forms and input fields
+ * Provides type-safe validation functions for forms and user inputs
  */
 
-// Types for validation results
-export interface ValidationResult {
+// Type for validation result
+export type ValidationResult = {
   isValid: boolean;
   message: string;
-}
+};
 
-export interface FormValidationResult {
-  isValid: boolean;
-  errors: Record<string, string>;
-}
+// Type for form field validation
+export type FieldValidation = {
+  value: string;
+  required?: boolean;
+  minLength?: number;
+  maxLength?: number;
+};
 
 /**
  * Validates an email address
@@ -20,120 +23,120 @@ export interface FormValidationResult {
  * @returns ValidationResult with validation status and message
  */
 export const validateEmail = (email: string): ValidationResult => {
-  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  
   if (!email) {
     return {
       isValid: false,
-      message: 'Email is required'
+      message: 'Email is required',
     };
   }
 
-  if (!emailRegex.test(email)) {
-    return {
-      isValid: false,
-      message: 'Please enter a valid email address'
-    };
-  }
+  // RFC 5322 compliant email regex
+  const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 
+  const isValid = emailRegex.test(email);
   return {
-    isValid: true,
-    message: ''
+    isValid,
+    message: isValid ? '' : 'Please enter a valid email address',
   };
 };
 
 /**
  * Validates required fields
- * @param value - The value to check
- * @param fieldName - Name of the field being validated
+ * @param field - The field value and validation requirements
  * @returns ValidationResult with validation status and message
  */
-export const validateRequired = (value: string, fieldName: string): ValidationResult => {
-  if (!value || value.trim().length === 0) {
+export const validateRequired = (field: FieldValidation): ValidationResult => {
+  if (field.required && !field.value.trim()) {
     return {
       isValid: false,
-      message: `${fieldName} is required`
+      message: 'This field is required',
+    };
+  }
+
+  if (field.minLength && field.value.length < field.minLength) {
+    return {
+      isValid: false,
+      message: `Minimum ${field.minLength} characters required`,
+    };
+  }
+
+  if (field.maxLength && field.value.length > field.maxLength) {
+    return {
+      isValid: false,
+      message: `Maximum ${field.maxLength} characters allowed`,
     };
   }
 
   return {
     isValid: true,
-    message: ''
+    message: '',
   };
 };
 
 /**
- * Validates minimum length of a string
- * @param value - The string to validate
- * @param minLength - Minimum required length
- * @param fieldName - Name of the field being validated
+ * Validates a phone number (optional utility)
+ * @param phone - The phone number to validate
  * @returns ValidationResult with validation status and message
  */
-export const validateMinLength = (
-  value: string,
-  minLength: number,
-  fieldName: string
-): ValidationResult => {
-  if (value.length < minLength) {
+export const validatePhone = (phone: string): ValidationResult => {
+  if (!phone) {
     return {
-      isValid: false,
-      message: `${fieldName} must be at least ${minLength} characters long`
+      isValid: true, // Phone is optional
+      message: '',
     };
   }
 
+  // Basic phone number validation (allows various formats)
+  const phoneRegex = /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/;
+  const isValid = phoneRegex.test(phone);
+
   return {
-    isValid: true,
-    message: ''
+    isValid,
+    message: isValid ? '' : 'Please enter a valid phone number',
   };
 };
 
 /**
- * Validates a contact form submission
- * @param data - Form data object containing email and other fields
- * @returns FormValidationResult with overall validation status and field-specific errors
+ * Validates form data object
+ * @param data - Object containing form field values
+ * @param schema - Validation schema defining required fields
+ * @returns Object with validation results for each field
  */
-export const validateContactForm = (data: {
-  email: string;
-  name: string;
-  message: string;
-}): FormValidationResult => {
-  const errors: Record<string, string> = {};
-  
-  // Validate email
-  const emailValidation = validateEmail(data.email);
-  if (!emailValidation.isValid) {
-    errors.email = emailValidation.message;
-  }
+export const validateForm = (
+  data: Record<string, string>,
+  schema: Record<string, FieldValidation>
+): Record<string, ValidationResult> => {
+  const results: Record<string, ValidationResult> = {};
 
-  // Validate name
-  const nameValidation = validateRequired(data.name, 'Name');
-  if (!nameValidation.isValid) {
-    errors.name = nameValidation.message;
-  }
+  Object.entries(schema).forEach(([field, requirements]) => {
+    const value = data[field] || '';
+    
+    // Apply required field validation
+    const requiredCheck = validateRequired({
+      value,
+      ...requirements,
+    });
 
-  // Validate message
-  const messageValidation = validateMinLength(data.message, 10, 'Message');
-  if (!messageValidation.isValid) {
-    errors.message = messageValidation.message;
-  }
+    if (!requiredCheck.isValid) {
+      results[field] = requiredCheck;
+      return;
+    }
 
-  return {
-    isValid: Object.keys(errors).length === 0,
-    errors
-  };
-};
+    // Apply specific field validations
+    switch (field) {
+      case 'email':
+        results[field] = validateEmail(value);
+        break;
+      case 'phone':
+        results[field] = validatePhone(value);
+        break;
+      default:
+        results[field] = {
+          isValid: true,
+          message: '',
+        };
+    }
+  });
 
-/**
- * Sanitizes user input to prevent XSS attacks
- * @param input - The string to sanitize
- * @returns Sanitized string
- */
-export const sanitizeInput = (input: string): string => {
-  return input
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#x27;')
-    .replace(/\//g, '&#x2F;');
+  return results;
 };

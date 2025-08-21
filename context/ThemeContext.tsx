@@ -59,3 +59,6 @@ export function useThemeContext() {
   }
   return context;
 }
+
+// Export the raw context as well for advanced use cases
+export { ThemeContext };

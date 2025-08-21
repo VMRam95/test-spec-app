@@ -25,7 +25,7 @@
 }
 
 @layer components {
-  /* Hero section styles */
+  /* Hero Section */
   .hero-title {
     @apply text-4xl md:text-6xl font-extrabold tracking-tight;
   }
@@ -35,21 +35,21 @@
   }
 
   .cta-button {
-    @apply inline-flex items-center px-6 py-3 text-base font-medium text-white bg-primary hover:bg-primary-dark rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary;
+    @apply inline-flex items-center px-6 py-3 text-base font-medium text-white bg-primary hover:bg-primary-dark rounded-lg transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary;
   }
 
-  /* Features grid styles */
+  /* Features Grid */
   .features-grid {
-    @apply grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3;
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8;
   }
 
   .feature-card {
-    @apply p-6 bg-gray-50 dark:bg-gray-800 rounded-xl transition-transform hover:scale-105;
+    @apply p-6 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 transition-all duration-200 hover:shadow-lg;
   }
 
-  /* Contact form styles */
+  /* Contact Form */
   .form-input {
-    @apply w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-800 dark:text-white;
+    @apply w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:text-white;
   }
 
   .form-label {
@@ -57,34 +57,24 @@
   }
 
   .form-error {
-    @apply text-sm text-red-600 dark:text-red-400 mt-1;
+    @apply text-red-600 dark:text-red-400 text-sm mt-1;
   }
 
-  .form-submit {
-    @apply w-full cta-button;
-  }
-}
-
-/* Accessibility improvements */
-@layer utilities {
-  .focus-visible-ring {
-    @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900;
-  }
-
+  /* Accessibility */
   .sr-only {
     @apply absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0;
   }
-}
 
-/* Smooth transitions for dark mode */
-* {
-  @apply transition-colors duration-200;
+  /* Focus styles for better accessibility */
+  .focus-visible:focus-visible {
+    @apply outline-none ring-2 ring-primary ring-offset-2;
+  }
 }
 
 /* Custom scrollbar for better UX */
 @media (min-width: 768px) {
   ::-webkit-scrollbar {
-    width: 8px;
+    @apply w-2;
   }
 
   ::-webkit-scrollbar-track {
@@ -97,5 +87,12 @@
 
   ::-webkit-scrollbar-thumb:hover {
     @apply bg-gray-400 dark:bg-gray-500;
+  }
+}
+
+/* Print styles for better accessibility */
+@media print {
+  .no-print {
+    display: none;
   }
 }
