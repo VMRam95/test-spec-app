@@ -1,77 +1,48 @@
 'use client'
 
-import React from 'react'
 import { Button } from './Button'
 
-interface HeroProps {
-  title?: string
-  subtitle?: string
-  ctaText?: string
-  ctaSecondaryText?: string
-  onCtaClick?: () => void
-  onCtaSecondaryClick?: () => void
-}
+export function Hero() {
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId)
+    element?.scrollIntoView({ behavior: 'smooth' })
+  }
 
-const Hero: React.FC<HeroProps> = ({
-  title = 'Build Something Amazing',
-  subtitle = 'Create beautiful, responsive web applications with modern tools and best practices',
-  ctaText = 'Get Started',
-  ctaSecondaryText = 'Learn More',
-  onCtaClick,
-  onCtaSecondaryClick
-}) => {
   return (
-    <section 
-      className="relative overflow-hidden bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 transition-colors duration-200"
-      aria-labelledby="hero-title"
-    >
-      <div className="absolute inset-0 bg-grid-gray-100 dark:bg-grid-gray-700/25 [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" />
-      
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="py-24 sm:py-32 lg:py-40">
-          <div className="mx-auto max-w-3xl text-center">
-            <h1 
-              id="hero-title"
-              className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-6xl lg:text-7xl"
-            >
-              <span className="block">{title.split(' ')[0]}</span>
-              <span className="block bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">
-                {title.split(' ').slice(1).join(' ')}
-              </span>
-            </h1>
-            
-            <p className="mt-6 text-lg leading-8 text-gray-600 dark:text-gray-300 sm:text-xl">
-              {subtitle}
-            </p>
-            
-            <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Button
-                onClick={onCtaClick}
-                variant="primary"
-                size="lg"
-                className="w-full sm:w-auto min-w-[200px] bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
-                aria-label={`${ctaText} - Primary action`}
-              >
-                {ctaText}
-              </Button>
-              
-              <Button
-                onClick={onCtaSecondaryClick}
-                variant="secondary"
-                size="lg"
-                className="w-full sm:w-auto min-w-[200px] border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
-                aria-label={`${ctaSecondaryText} - Secondary action`}
-              >
-                {ctaSecondaryText}
-              </Button>
-            </div>
-          </div>
+    <section className="relative py-32 px-4 overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-br from-primary-50 to-primary-100 dark:from-gray-800 dark:to-gray-900 opacity-50"></div>
+      <div className="container mx-auto text-center relative z-10">
+        <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 animate-fade-in">
+          <span className="gradient-text">Welcome to</span>
+          <br />
+          <span className="text-gray-900 dark:text-white">Simple Landing</span>
+        </h1>
+        <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto animate-slide-up">
+          Build beautiful, responsive websites with Next.js and Tailwind CSS. 
+          Fast, modern, and ready for production.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-4 justify-center animate-slide-up">
+          <Button 
+            size="lg"
+            onClick={() => scrollToSection('features')}
+          >
+            Explore Features
+          </Button>
+          <Button 
+            variant="outline" 
+            size="lg"
+            onClick={() => scrollToSection('contact')}
+          >
+            Get Started
+          </Button>
         </div>
       </div>
       
-      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-300 dark:via-gray-600 to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0">
+        <svg className="w-full h-24 text-gray-50 dark:text-gray-900" preserveAspectRatio="none" viewBox="0 0 1440 100" fill="currentColor">
+          <path d="M0,50 C360,100 1080,0 1440,50 L1440,100 L0,100 Z"></path>
+        </svg>
+      </div>
     </section>
   )
 }
-
-export default Hero
